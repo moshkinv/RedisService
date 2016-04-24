@@ -13,8 +13,8 @@ namespace RedisService
         public RedisService()
         {
             redis = RedisConnectorHelper.Connection.GetDatabase();
-            //redis.StringGet() 
-            //RedisKey
+            //redis.dele
+            
         }
 
         #region Redis proparty
@@ -40,17 +40,9 @@ namespace RedisService
             return redis.StringGet(key, CommandFlags.None);
         }
 
-        public string KeyBuilder(string objectType, object id, string field = null)
+        public bool KeyDelete(string key)
         {
-            if (field == null)
-            {
-                return $"{objectType}:{id.ToString()}";
-            }
-            else
-            {
-                return $"{objectType}:{id.ToString()}:{field}";
-            }
-            
+            return redis.KeyDelete(key, CommandFlags.None);
         }
 
     }

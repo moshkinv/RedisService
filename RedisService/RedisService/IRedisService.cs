@@ -14,7 +14,6 @@ namespace RedisService
 
         bool StringSet(string key, string value);
         string StringGet(string key);
-
-        string KeyBuilder(string objectType, object id, string field = null);
+        bool KeyDelete(string key);
     }
 }

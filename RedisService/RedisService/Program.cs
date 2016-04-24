@@ -13,23 +13,25 @@ namespace RedisService
             IRedisService redisService = new RedisService();
 
             #region ConnectionMultiplexerThatCreatedThisInstance
-            Console.WriteLine($"IsConnected: {redisService.ConnectionMultiplexerThatCreatedThisInstance.IsConnected}");
-            Console.WriteLine($"ClientName: {redisService.ConnectionMultiplexerThatCreatedThisInstance.ClientName}");
-            Console.WriteLine($"Configuration: {redisService.ConnectionMultiplexerThatCreatedThisInstance.Configuration}");
-            Console.WriteLine($"IncludeDetailInExceptions: {redisService.ConnectionMultiplexerThatCreatedThisInstance.IncludeDetailInExceptions}");
-            Console.WriteLine($"OperationCount: {redisService.ConnectionMultiplexerThatCreatedThisInstance.OperationCount}");
-            Console.WriteLine($"PreserveAsyncOrder: {redisService.ConnectionMultiplexerThatCreatedThisInstance.PreserveAsyncOrder}");
-            Console.WriteLine($"StormLogThreshold: {redisService.ConnectionMultiplexerThatCreatedThisInstance.StormLogThreshold}");
-            Console.WriteLine($"TimeoutMilliseconds:{redisService.ConnectionMultiplexerThatCreatedThisInstance.TimeoutMilliseconds}");
+            var myConnectionMultiplexer = redisService.ConnectionMultiplexerThatCreatedThisInstance;
+            Console.WriteLine($"IsConnected: {myConnectionMultiplexer.IsConnected}");
+            Console.WriteLine($"ClientName: {myConnectionMultiplexer.ClientName}");
+            Console.WriteLine($"Configuration: {myConnectionMultiplexer.Configuration}");
+            Console.WriteLine($"IncludeDetailInExceptions: {myConnectionMultiplexer.IncludeDetailInExceptions}");
+            Console.WriteLine($"OperationCount: {myConnectionMultiplexer.OperationCount}");
+            Console.WriteLine($"PreserveAsyncOrder: {myConnectionMultiplexer.PreserveAsyncOrder}");
+            Console.WriteLine($"StormLogThreshold: {myConnectionMultiplexer.StormLogThreshold}");
+            Console.WriteLine($"TimeoutMilliseconds:{myConnectionMultiplexer.TimeoutMilliseconds}");
             Console.WriteLine(String.Empty);
             #endregion
 
             #region String
-            redisService.StringSet(redisService.KeyBuilder("Company","1","Name"), "Evolvice");
-            redisService.StringSet(redisService.KeyBuilder("Company", "1", "Code"), "EC");
-            var name = redisService.StringGet(redisService.KeyBuilder("Company", "2", "Name"));
-            var code = redisService.StringGet(redisService.KeyBuilder("Company", "2", "Name"));
-            Console.WriteLine(value);
+            redisService.StringSet(RedisUtils.KeyBuilder("Company", 1, "Name"), "Evolvice");
+            redisService.StringSet(RedisUtils.KeyBuilder("Company", 1, "Code"), "EC");
+            //redisService.KeyDelete(RedisUtils.KeyBuilder("Company", 1, "Code"));
+            var name = redisService.StringGet(RedisUtils.KeyBuilder("Company", 1, "Name"));
+            var code = redisService.StringGet(RedisUtils.KeyBuilder("Company", 1, "Code"));         
+            Console.WriteLine($"CompanyName: <{name}> CompanyCode: <{code}>");
             #endregion
 
 
