@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using StackExchange.Redis.Extensions.Core.Extensions;
 
 namespace RedisService
 {
@@ -11,7 +13,7 @@ namespace RedisService
         static void Main(string[] args)
         {
             IRedisService redisService = new RedisService();
-
+            
             #region ConnectionMultiplexerThatCreatedThisInstance
             var myConnectionMultiplexer = redisService.ConnectionMultiplexerThatCreatedThisInstance;
             Console.WriteLine($"IsConnected: {myConnectionMultiplexer.IsConnected}");
@@ -25,17 +27,17 @@ namespace RedisService
             Console.WriteLine(String.Empty);
             #endregion
 
-            #region String
-            redisService.StringSet(RedisUtils.KeyBuilder("Company", 1, "Name"), "Evolvice");
-            redisService.StringSet(RedisUtils.KeyBuilder("Company", 1, "Code"), "EC");
-            //redisService.KeyDelete(RedisUtils.KeyBuilder("Company", 1, "Code"));
-            var name = redisService.StringGet(RedisUtils.KeyBuilder("Company", 1, "Name"));
-            var code = redisService.StringGet(RedisUtils.KeyBuilder("Company", 1, "Code"));         
-            Console.WriteLine($"CompanyName: <{name}> CompanyCode: <{code}>");
-            #endregion
-
-
             Console.ReadKey();
         }
+    }
+
+    public class User
+    {
+        public long Id { get; set; }
+        public string FirstName { get; set; }
+        public string SureName { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
+        public int Age { get; set; }    
     }
 }

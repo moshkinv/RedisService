@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+using StackExchange.Redis.Extensions.Core;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace RedisService
 {
@@ -15,22 +17,22 @@ namespace RedisService
             string ip = ConfigurationManager.AppSettings["IP"];
             string port = ConfigurationManager.AppSettings["Port"];
 
-            RedisConnectorHelper.lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
-            {
-                //return ConnectionMultiplexer.Connect("localhost:6379");
-                //return ConnectionMultiplexer.Connect("server1: 6379, server2: 6379");
-                return ConnectionMultiplexer.Connect($"{ip}:{port}");
-            });
+            var serializer = new NewtonsoftSerializer();
+
+            _lazyConnection = new Lazy<ConnectionMultiplexer>(
+                () => ConnectionMultiplexer.Connect($"{ip}:{port}"));
+
+            _lazyConnectionExt = new Lazy<StackExchangeRedisCacheClient>(
+                () => new StackExchangeRedisCacheClient(
+                    ConnectionMultiplexer.Connect($"{ip}:{port}"), serializer));
         }
 
-        private static Lazy<ConnectionMultiplexer> lazyConnection;
+        private readonly static Lazy<ConnectionMultiplexer> _lazyConnection;
 
-        public static ConnectionMultiplexer Connection
-        {
-            get
-            {
-                return lazyConnection.Value;
-            }
-        }
+        private readonly static Lazy<StackExchangeRedisCacheClient> _lazyConnectionExt; 
+
+        public static ConnectionMultiplexer Connection => _lazyConnection.Value;
+
+        public static StackExchangeRedisCacheClient ConnectionExt => _lazyConnectionExt.Value;
     }
 }
