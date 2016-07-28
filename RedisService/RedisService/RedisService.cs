@@ -9,127 +9,37 @@ namespace RedisService
 {
     public class RedisService : IRedisService
     {
-        private readonly IDatabase _clientNative;
         private readonly ICacheClient _clientExt;
         public RedisService()
         {
-            _clientNative = RedisConnectorHelper.Connection.GetDatabase();
             _clientExt = RedisConnectorHelper.ConnectionExt;
         }
 
         public IDatabase ClientNative
         {
-            get { return _clientNative; }
+            get { return _clientExt.Database; }
         }
 
         #region _clientNative proparty
-        public int NumericIdentifierOfThisDataBase => _clientNative.Database;
+        public int NumericIdentifierOfThisDataBase => _clientExt.Database.Database;
 
-        public ConnectionMultiplexer ConnectionMultiplexerThatCreatedThisInstance => _clientNative.Multiplexer;
+        public ConnectionMultiplexer ConnectionMultiplexerThatCreatedThisInstance => _clientExt.Database.Multiplexer;
 
-        #endregion
-
-        #region Redis String
-        public bool StringSet(string key, string value)
-        {
-            TimeSpan? expiry = null;
-            return _clientNative.StringSet(key, value, expiry, When.Always);
-        }
-
-        public string StringGet(string key)
-        {
-            return _clientNative.StringGet(key);
-        }
-
-        public long StringAppend(string key, string value)
-        {
-            return _clientNative.StringAppend(key, value);
-        }
-
-        public long StringBitCount(string key)
-        {
-            long start = 0;
-            long end = -1;
-            return _clientNative.StringBitCount(key, start, end);
-        }
-
-        public long StringBitOperation(Bitwise bitwise, string destination, string firstKey, string secondKey)
-        {
-            return _clientNative.StringBitOperation(bitwise, destination, firstKey, secondKey);
-        }
-
-        public long StringBitPosition(string key, bool bit)
-        {
-            long start = 0;
-            long end = -1;
-            return _clientNative.StringBitPosition(key, bit, start, end);
-        }
-
-        public long StringDecrement(string key, long value = 1)
-        {
-            return _clientNative.StringDecrement(key, value);
-        }
-
-        public long StringIncrement(string key, long value = 1)
-        {
-            return _clientNative.StringIncrement(key, value);
-        }
-
-        public bool StringGetBit(string key, long offset)
-        {
-            return _clientNative.StringGetBit(key, offset);
-        }
-
-        public string StringGetRange(string key, long startIndex, long endIndex)
-        {
-            return _clientNative.StringGetRange(key, startIndex, endIndex);
-        }
-
-        public string StringGetSet(string key, string value)
-        {
-            return _clientNative.StringGetSet(key, value);
-        }
-
-        public RedisValueWithExpiry StringGetWithExpiry(string key, string value)
-        {
-            return _clientNative.StringGetWithExpiry(key);
-
-        }
-
-        public long StringLength(string key)
-        {
-            return _clientNative.StringLength(key);
-        }
-
-        public bool StringSetBit(string key, long offset, bool bit)
-        {
-            return _clientNative.StringSetBit(key, offset, bit);
-        }
-
-        public bool KeyDelete(string key)
-        {
-            return _clientNative.KeyDelete(key);
-        }
-
-        public string StringSetRange(string key, long offset, string value)
-        {
-            return _clientNative.StringSetRange(key, offset, value);
-        }
         #endregion
 
         #region ClientExtensions
 
-        public bool Add<T>(string key, T value)
+        public bool Add<T>(object key, T value)
         {
             return _clientExt.Add(RedisUtils.KeyBuilder<T>(key), value);
         }
 
-        public bool Add<T>(string key, T value, TimeSpan expiresIn)
+        public bool Add<T>(object key, T value, TimeSpan expiresIn)
         {
             return _clientExt.Add(RedisUtils.KeyBuilder<T>(key), value, expiresIn);
         }
 
-        public bool Add<T>(string key, T value, DateTimeOffset expiresAt)
+        public bool Add<T>(object key, T value, DateTimeOffset expiresAt)
         {
             return _clientExt.Add(RedisUtils.KeyBuilder<T>(key), value, expiresAt);
         }
@@ -139,17 +49,17 @@ namespace RedisService
             return _clientExt.AddAll(items);
         }
 
-        public Task<bool> AddAsync<T>(string key, T value)
+        public Task<bool> AddAsync<T>(object key, T value)
         {
             return _clientExt.AddAsync(RedisUtils.KeyBuilder<T>(key), value);
         }
 
-        public Task<bool> AddAsync<T>(string key, T value, TimeSpan expiresIn)
+        public Task<bool> AddAsync<T>(object key, T value, TimeSpan expiresIn)
         {
             return _clientExt.AddAsync(RedisUtils.KeyBuilder<T>(key), value, expiresIn);
         }
 
-        public Task<bool> AddAsync<T>(string key, T value, DateTimeOffset expiresAt)
+        public Task<bool> AddAsync<T>(object key, T value, DateTimeOffset expiresAt)
         {
             return _clientExt.AddAsync(RedisUtils.KeyBuilder<T>(key), value, expiresAt);
         }
@@ -159,7 +69,7 @@ namespace RedisService
             return _clientExt.AddAllAsync(items);
         }
 
-        public bool Exists<T>(string key)
+        public bool Exists<T>(object key)
         {
             return _clientExt.Exists(RedisUtils.KeyBuilder<T>(key));
         }
@@ -178,12 +88,12 @@ namespace RedisService
             return _clientExt.FlushDbAsync();
         }
 
-        public T Get<T>(string key)
+        public T Get<T>(object key)
         {
             return _clientExt.Get<T>(RedisUtils.KeyBuilder<T>(key));
         }
 
-        public IDictionary<string, T> GetAll<T>(IEnumerable<string> keys)
+        public IDictionary<string, T> GetAll<T>(IEnumerable<object> keys)
         {
             return _clientExt.GetAll<T>(RedisUtils.KeysBuilder<T>(keys));
         }
@@ -193,7 +103,7 @@ namespace RedisService
             return _clientExt.GetAllAsync<T>(RedisUtils.KeysBuilder<T>(keys));
         }
 
-        public Task<T> GetAsync<T>(string key)
+        public Task<T> GetAsync<T>(object key)
         {
             return _clientExt.GetAsync<T>(RedisUtils.KeyBuilder<T>(key));
         }

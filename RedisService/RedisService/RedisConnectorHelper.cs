@@ -16,22 +16,16 @@ namespace RedisService
         {
             string ip = ConfigurationManager.AppSettings["IP"];
             string port = ConfigurationManager.AppSettings["Port"];
+            string allowAdmin = ConfigurationManager.AppSettings["allowAdmin"];
 
             var serializer = new NewtonsoftSerializer();
 
-            _lazyConnection = new Lazy<ConnectionMultiplexer>(
-                () => ConnectionMultiplexer.Connect($"{ip}:{port}"));
-
             _lazyConnectionExt = new Lazy<StackExchangeRedisCacheClient>(
                 () => new StackExchangeRedisCacheClient(
-                    ConnectionMultiplexer.Connect($"{ip}:{port}"), serializer));
+                    ConnectionMultiplexer.Connect($"{ip}:{port}, allowAdmin={allowAdmin}"), serializer));
         }
 
-        private readonly static Lazy<ConnectionMultiplexer> _lazyConnection;
-
         private readonly static Lazy<StackExchangeRedisCacheClient> _lazyConnectionExt; 
-
-        public static ConnectionMultiplexer Connection => _lazyConnection.Value;
 
         public static StackExchangeRedisCacheClient ConnectionExt => _lazyConnectionExt.Value;
     }

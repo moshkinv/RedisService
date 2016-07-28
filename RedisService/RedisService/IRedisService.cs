@@ -15,27 +15,23 @@ namespace RedisService
         int NumericIdentifierOfThisDataBase { get; }
         ConnectionMultiplexer ConnectionMultiplexerThatCreatedThisInstance { get; }
 
-        bool StringSet(string key, string value);
-        string StringGet(string key);
-        bool KeyDelete(string key);
+        bool Add<T>(object key, T value);
 
-        bool Add<T>(string key, T value);
+        bool Add<T>(object key, T value, TimeSpan expiresIn);
 
-        bool Add<T>(string key, T value, TimeSpan expiresIn);
-
-        bool Add<T>(string key, T value, DateTimeOffset expiresAt);
+        bool Add<T>(object key, T value, DateTimeOffset expiresAt);
 
         bool AddAll<T>(IList<Tuple<string, T>> items);
 
         Task<bool> AddAllAsync<T>(IList<Tuple<string, T>> items);
 
-        Task<bool> AddAsync<T>(string key, T value);
+        Task<bool> AddAsync<T>(object key, T value);
 
-        Task<bool> AddAsync<T>(string key, T value, TimeSpan expiresIn);
+        Task<bool> AddAsync<T>(object key, T value, TimeSpan expiresIn);
 
-        Task<bool> AddAsync<T>(string key, T value, DateTimeOffset expiresAt);
+        Task<bool> AddAsync<T>(object key, T value, DateTimeOffset expiresAt);
 
-        bool Exists<T>(string key);
+        bool Exists<T>(object key);
 
         Task<bool> ExistsAsync<T>(string key);
 
@@ -43,13 +39,13 @@ namespace RedisService
 
         Task FlushDbAsync();
 
-        T Get<T>(string key);
+        T Get<T>(object key);
 
-        IDictionary<string, T> GetAll<T>(IEnumerable<string> keys);
+        IDictionary<string, T> GetAll<T>(IEnumerable<object> keys);
 
         Task<IDictionary<string, T>> GetAllAsync<T>(IEnumerable<string> keys);
 
-        Task<T> GetAsync<T>(string key);
+        Task<T> GetAsync<T>(object key);
       
         Dictionary<string, string> GetInfo();
       
