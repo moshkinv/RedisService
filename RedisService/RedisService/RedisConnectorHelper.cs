@@ -1,9 +1,5 @@
 ﻿using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
 using StackExchange.Redis.Extensions.Core;
 using StackExchange.Redis.Extensions.Newtonsoft;
@@ -25,7 +21,7 @@ namespace RedisService
                     ConnectionMultiplexer.Connect($"{ip}:{port}, allowAdmin={allowAdmin}"), serializer));
         }
 
-        private readonly static Lazy<StackExchangeRedisCacheClient> _lazyConnectionExt; 
+        private static Lazy<StackExchangeRedisCacheClient> _lazyConnectionExt; 
 
         public static StackExchangeRedisCacheClient ConnectionExt => _lazyConnectionExt.Value;
     }

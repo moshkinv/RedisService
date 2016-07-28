@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core;

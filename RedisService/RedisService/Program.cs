@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using StackExchange.Redis;
-using StackExchange.Redis.Extensions.Core.Extensions;
 
 namespace RedisService
 {
@@ -28,6 +22,7 @@ namespace RedisService
             Console.WriteLine($"StormLogThreshold: {myConnectionMultiplexer.StormLogThreshold}");
             Console.WriteLine($"TimeoutMilliseconds:{myConnectionMultiplexer.TimeoutMilliseconds}");
             Console.WriteLine(String.Empty);
+            Console.ReadKey();
 
             var info = redisService.GetInfo();
             #endregion
@@ -177,6 +172,13 @@ namespace RedisService
 
             bool committed = tran.Execute();
 
+            #endregion
+
+            #region Pipelining
+            var aPending = redisService.ClientNative.StringGetAsync("a");
+            var bPending = redisService.ClientNative.StringGetAsync("b");
+            var a = redisService.ClientNative.Wait(aPending);
+            var b = redisService.ClientNative.Wait(bPending);
             #endregion
 
             Console.ReadKey();
